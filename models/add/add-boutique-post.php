@@ -68,7 +68,7 @@
                 $_SESSION['msg']="Enregistrement reussie";
                 header('location:../../views/boutique.php?AjoutBout');
             
-            }
+            }  
       }
        else
        {

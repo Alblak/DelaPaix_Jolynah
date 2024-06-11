@@ -11,7 +11,7 @@ include('../connexion/connexion.php');
     <link rel="stylesheet" href="boutique.css">
     <?php require_once('style.php') ?>
     
-   
+     
 </head>
 
 <body class="sidebar-mini fixed">

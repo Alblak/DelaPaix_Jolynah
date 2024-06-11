@@ -2,7 +2,7 @@
   include('../../connexion/connexion.php');
   #suppression
   if (isset($_GET['block']) && !empty($_GET['block'])) {
-      $initial=$_GET['block'];
+      $initial=$_GET['block'];  
       
       $req=$connexion->prepare("DELETE from chambre  where numero like ?");
       $req->execute(array("%".$initial."%"));
