@@ -1,6 +1,6 @@
 <!-- Navbar-->
 <header class="main-header-top hidden-print">
-    <a href="index.html" class="logo"><img src="../photo/logo.png" alt="" width="160" height="80"></a>
+    <!-- <a href="index.html" class="logo"><img src="../photo/logo.png" alt="" width="160" height="80"></a> -->
     <nav class="navbar navbar-static-top">
         <!-- Sidebar toggle button-->
         <a href="#!" data-toggle="offcanvas" class="sidebar-toggle"></a>
