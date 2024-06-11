@@ -1,3 +1,6 @@
+<?php 
+include('../connexion/connexion.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +8,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chambres</title>
+    <link rel="stylesheet" href="boutique.css">
     <?php require_once('style.php') ?>
+    
+   
 </head>
 
 <body class="sidebar-mini fixed">
@@ -32,21 +38,48 @@
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-block">
-                                    <h3 class="text-center">Ajouter une chambre</h3>
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1" class="form-control-label">Numero de la chambre</label>
-                                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Entrer votre Nom">
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label for="exampleSelect1" class="form-control-label">Categorie</label>
-                                            <select class="form-control " id="exampleSelect1">
-                                                <option>Double-porte</option>
-                                                <option>Mono-porte</option>                                                
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-info w-100 waves-effect waves-light m-r-30">Enregistrer</button>
+                                    <h3 class="text-center"> chambre</h3>
+                                    <?php if(isset($_SESSION['msg']) && !empty($_SESSION['msg'])){ 
+                    ?> <div class="alert-info alert text-center"><?php echo $_SESSION['msg'];?> </div><?php 
+                } 
+                unset($_SESSION['msg']);
+            ?>
+                                    <form action="../models/add/add-boutique-post.php" method="POST">
+                                        <div class="row">
+                                            <div class=" form-group">
+                                                <label for="nombre" class="form-control-label">Nombre de chambre </label>
+                                                <input type="number" name="nombre"class="form-control" id="nombre" aria-describedby="emailHelp" placeholder="Entrer le nombre de chambre">
+                                            </div>
+                                            <div class=" form-group">
+                                                <label for="initial" class="form-control-label">Choisir l'initial</label>
+                                                <select class="form-control " name="initial" id="initial">
+                                                <?php 
+                                                $req=$connexion->prepare("SELECT * from lettre");
+                                                $req->execute();
+                                                while($lettre=$req->fetch()){
+                                                    $initial=$lettre['lettres'];
+                                                    $reqq=$connexion->prepare("SELECT count(id) as nb from chambre where numero like ?");
+                                                    $reqq->execute(array("%".$initial."%"));
+                                                    $count=$reqq->fetch();
+                                                    $nb=$count['nb'];
+                                            
+                                                    if($nb<32){
+                                                
+                                                ?>
+                                                    <option value="<?=$lettre['lettres']?>"><?=$lettre['lettres'].' '.$nb?> chambres enregistrer sur les 32</option>
+                                                <?php } } ?>                          
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="categorie" class="form-control-label">Categorie</label>
+                                                <select class="form-control " name="categorie" id="categorie">
+                                                    <option value="1">Double-porte</option>
+                                                    <option value="2">Mono-porte</option>                                                
+                                                </select>
+                                            </div>
+                                            <button type="submit"name="valider" class="btn btn-info w-100 waves-effect waves-light m-r-30">Enregistrer</button>
+                                      </div>
                                     </form>
                                 </div>
                             </div>
@@ -82,25 +115,73 @@
                                     <thead>
                                         <tr>
                                             <th>N°</th>
-                                            <th>Categorie</th>
-                                            <th>Prix</th>                                            
+                                     
+                                            <th>Numero chambre</th>                                            
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>                                            
-                                            <td>Mono-porte</td>
-                                            <td>15$</td>
-                                            <td>
-                                                <a href="" class="btn btn-sm btn-info">
-                                                    <i class="bi bi-pen-fill"></i>
-                                                </a>
-                                                <a onclick=" return confirm('Voulez-vous vraiment supprimer ?')" href="#" class="btn btn-danger btn-sm mt-1">
+                                    <?php 
+                                                $req=$connexion->prepare("SELECT * from lettre");
+                                                $req->execute();
+                                                $num=0;
+                                                while($Data=$req->fetch()){
+                                                    $num++;
+                                                    $initial=$Data['lettres'];
+                                                    $reqq=$connexion->prepare("SELECT count(id) as nb from chambre where numero like ?");
+                                                    $reqq->execute(array("%".$initial."%"));
+                                                    $count=$reqq->fetch();
+                                                    $nb=$count['nb'];
+                                            
+                                                    if($nb>0){
+                                                
+                                                ?>
+                                        <tr class="ligne">
+                                                                                      
+                                            <td>Bloc   <?=$Data['lettres']?></td>
+                               
+                                            <td>Total chambre :   <?=$nb?></td>
+                                            <td> 
+                                              
+                                                
+                                                <a onclick=" return confirm('Voulez-vous vraiment supprimer ?')" href="../models/delete/del-boutique-post.php?block=<?=$Data['lettres'] ?>" class="btn btn-danger btn-sm mt-1">
                                                     <i class="bi bi-trash-fill"></i>
                                                 </a>
+                                                
                                             </td>
                                         </tr>
+                                      
+                                        <?php 
+                                        $requ=$connexion->prepare("SELECT * from chambre where numero like ? ");
+                                        $requ->execute(array("%".$initial."%"));
+                                        $numch=0;
+                                        while($chambre=$requ->fetch()){
+                                            $numch++;
+                                            
+
+
+
+                                        ?>
+                                        <tr>
+                                        <td><?=$numch?></td>
+                                        <td><?=$chambre['numero']?></td>
+                                        
+                                        <td>
+                                            <?php if($numch==$nb){?>
+
+                                                <!-- <a href="" class="btn btn-sm btn-info">
+                                                    <i class="bi bi-pen-fill"></i>
+                                                </a> -->
+                                               
+                                                <a onclick=" return confirm('Voulez-vous vraiment supprimer ?')" href="../models/delete/del-boutique-post.php?supchambre=<?=$chambre['id']?>" class="btn btn-danger btn-sm mt-1">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </a>
+                                                <?php } ?>
+                                                
+                                            </td>
+                                        </tr>
+                                        <?php } } } ?>
+                                        
                                     </tbody>
                                 </table>
                             </div>
